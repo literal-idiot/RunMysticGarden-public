@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Mystical Garden Runner</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-dark.min.css" rel="stylesheet">
+    <style>
+        .endpoint-card {
+            border-left: 4px solid var(--bs-primary);
+        }
+        .method-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .method-post { background-color: #198754; }
+        .method-get { background-color: #0d6efd; }
+        .method-put { background-color: #fd7e14; }
+        .method-delete { background-color: #dc3545; }
+        pre { background-color: var(--bs-dark); padding: 1rem; border-radius: 0.375rem; }
+        .toc { position: sticky; top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="py-4 mb-4 border-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="h2 mb-0">
+                            <i class="fas fa-book text-primary me-2"></i>
+                            API Documentation
+                        </h1>
+                        <p class="text-muted mb-0">Mystical Garden Runner REST API</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="/" class="btn btn-outline-secondary">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="row">
+                <!-- Table of Contents -->
+                <div class="col-lg-3">
+                    <div class="toc">
+                        <h5>Table of Contents</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#authentication" class="text-decoration-none">Authentication</a></li>
+                            <li><a href="#runs" class="text-decoration-none">Runs</a></li>
+                            <li><a href="#wallet" class="text-decoration-none">Wallet</a></li>
+                            <li><a href="#seeds" class="text-decoration-none">Seeds</a></li>
+                            <li><a href="#garden" class="text-decoration-none">Garden</a></li>
+                            <li><a href="#plants" class="text-decoration-none">Plants</a></li>
+                            <li><a href="#stats" class="text-decoration-none">Statistics</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Documentation -->
+                <div class="col-lg-9">
+                    <!-- Base URL -->
+                    <div class="mb-5">
+                        <h3>Base URL</h3>
+                        <pre><code>http://localhost:5000</code></pre>
+                        <p class="text-muted">All API requests should be made to this base URL.</p>
+                    </div>
+
+                    <!-- Authentication Section -->
+                    <section id="authentication" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-lock text-warning me-2"></i>
+                            Authentication
+                        </h3>
+
+                        <!-- Register -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Register User</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/register</code></p>
+                                <p><strong>Description:</strong> Create a new user account</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "email": "user@example.com",
+    "username": "runner123",
+    "password": "securepassword123"
+}</code></pre>
+
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "message": "User registered successfully",
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "user": {
+        "id": 1,
+        "email": "user@example.com",
+        "username": "runner123",
+        "created_at": "2025-06-24T10:00:00Z",
+        "is_active": true
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Login -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Login</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/login</code></p>
+                                <p><strong>Description:</strong> Authenticate user and get access token</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "email": "user@example.com",
+    "password": "securepassword123"
+}</code></pre>
+
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "message": "Login successful",
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "user": {
+        "id": 1,
+        "email": "user@example.com",
+        "username": "runner123",
+        "created_at": "2025-06-24T10:00:00Z",
+        "is_active": true
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Get Profile -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Profile</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/profile</code></p>
+                                <p><strong>Description:</strong> Get current user profile</p>
+                                <p><strong>Authentication:</strong> Required (JWT token)</p>
+                                
+                                <h6>Headers:</h6>
+                                <pre><code>Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Runs Section -->
+                    <section id="runs" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-running text-success me-2"></i>
+                            Runs
+                        </h3>
+
+                        <!-- Log Run -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Log Run</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/runs</code></p>
+                                <p><strong>Description:</strong> Log a new running session</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "distance_km": 5.2,
+    "duration_minutes": 30,
+    "intensity": "moderate"
+}</code></pre>
+
+                                <p><strong>Intensity levels:</strong> low, moderate, high, extreme</p>
+
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "message": "Run logged successfully",
+    "run": {
+        "id": 1,
+        "distance_km": 5.2,
+        "duration_minutes": 30,
+        "intensity": "moderate",
+        "pace_min_per_km": 5.77,
+        "coins_earned": 62,
+        "created_at": "2025-06-24T10:30:00Z"
+    },
+    "coins_earned": 62,
+    "total_coins": 162
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Get Runs -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Runs</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/runs</code></p>
+                                <p><strong>Description:</strong> Get user's running history</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Query Parameters:</h6>
+                                <ul>
+                                    <li><code>page</code> - Page number (default: 1)</li>
+                                    <li><code>per_page</code> - Items per page (default: 20, max: 100)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Wallet Section -->
+                    <section id="wallet" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-coins text-warning me-2"></i>
+                            Wallet
+                        </h3>
+
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Wallet</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/wallet</code></p>
+                                <p><strong>Description:</strong> Get coin wallet information</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "wallet": {
+        "id": 1,
+        "user_id": 1,
+        "balance": 162,
+        "total_earned": 162,
+        "total_spent": 0,
+        "updated_at": "2025-06-24T10:30:00Z"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Seeds Section -->
+                    <section id="seeds" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-seedling text-info me-2"></i>
+                            Seeds
+                        </h3>
+
+                        <!-- Get Seeds -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Available Seeds</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/seeds</code></p>
+                                <p><strong>Description:</strong> Get all available seeds for purchase</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                            </div>
+                        </div>
+
+                        <!-- Buy Seed -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Buy Seed</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/seeds/:id/buy</code></p>
+                                <p><strong>Description:</strong> Purchase and plant a seed</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "position_x": 2,
+    "position_y": 3,
+    "name": "My Beautiful Rose"
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Garden Section -->
+                    <section id="garden" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-spa text-primary me-2"></i>
+                            Garden
+                        </h3>
+
+                        <!-- Get Garden -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Garden</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/garden</code></p>
+                                <p><strong>Description:</strong> Get garden status and all plants</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                            </div>
+                        </div>
+
+                        <!-- Update Garden -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Update Garden</h5>
+                                <span class="badge method-badge method-put">PUT</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/garden</code></p>
+                                <p><strong>Description:</strong> Update garden settings</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "name": "My Enchanted Garden"
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Plants Section -->
+                    <section id="plants" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-leaf text-success me-2"></i>
+                            Plants
+                        </h3>
+
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Update Plant</h5>
+                                <span class="badge method-badge method-put">PUT</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/plants/:id</code></p>
+                                <p><strong>Description:</strong> Update plant name or position</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "name": "My Favorite Rose",
+    "position_x": 4,
+    "position_y": 5
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Statistics Section -->
+                    <section id="stats" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-chart-bar text-info me-2"></i>
+                            Statistics
+                        </h3>
+
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get User Statistics</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/stats</code></p>
+                                <p><strong>Description:</strong> Get comprehensive user statistics</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                                
+                                <h6>Response includes:</h6>
+                                <ul>
+                                    <li>User profile information</li>
+                                    <li>Running statistics (total distance, runs, averages)</li>
+                                    <li>Wallet information</li>
+                                    <li>Garden level and plant statistics</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Error Handling -->
+                    <section id="errors" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                            Error Handling
+                        </h3>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <p>The API uses conventional HTTP response codes to indicate success or failure:</p>
+                                <ul>
+                                    <li><strong>200 OK</strong> - Request succeeded</li>
+                                    <li><strong>201 Created</strong> - Resource created successfully</li>
+                                    <li><strong>400 Bad Request</strong> - Invalid request data</li>
+                                    <li><strong>401 Unauthorized</strong> - Authentication required</li>
+                                    <li><strong>404 Not Found</strong> - Resource not found</li>
+                                    <li><strong>409 Conflict</strong> - Resource already exists</li>
+                                    <li><strong>500 Internal Server Error</strong> - Server error</li>
+                                </ul>
+
+                                <h6>Error Response Format:</h6>
+                                <pre><code class="language-json">{
+    "error": "Detailed error message describing what went wrong"
+}</code></pre>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-4 mt-5 border-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2025 Mystical Garden Runner API</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="mb-0">Built with Flask & SQLAlchemy</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

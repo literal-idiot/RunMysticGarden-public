@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystical Garden Runner - API Backend</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="py-4 mb-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="display-4 mb-2">
+                            <i class="fas fa-seedling text-success me-3"></i>
+                            Mystical Garden Runner
+                        </h1>
+                        <p class="lead">REST API Backend for Gamified Running App</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="/docs" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-book me-2"></i>API Documentation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Features Section -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        Features
+                    </h2>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-user-plus fa-2x text-primary mb-3"></i>
+                            <h5 class="card-title">User Management</h5>
+                            <p class="card-text">Secure registration and authentication with JWT tokens. Email/password login system.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-running fa-2x text-success mb-3"></i>
+                            <h5 class="card-title">Run Tracking</h5>
+                            <p class="card-text">Log runs with distance, duration, and intensity. Automatic pace calculation and progress tracking.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-coins fa-2x text-warning mb-3"></i>
+                            <h5 class="card-title">Coin Rewards</h5>
+                            <p class="card-text">Earn coins based on distance and intensity. Bonus rewards for milestone achievements.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-seedling fa-2x text-info mb-3"></i>
+                            <h5 class="card-title">Mystical Seeds</h5>
+                            <p class="card-text">Purchase seeds with earned coins. Different rarities and plant types with unique requirements.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-leaf fa-2x text-success mb-3"></i>
+                            <h5 class="card-title">Plant Growth</h5>
+                            <p class="card-text">Plants grow based on your running activity. Different stages from seed to blooming flower.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <i class="fas fa-spa fa-2x text-primary mb-3"></i>
+                            <h5 class="card-title">Garden Management</h5>
+                            <p class="card-text">Customize your mystical garden. Level up to expand and unlock new features.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Status -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <i class="fas fa-server text-info me-2"></i>
+                        API Status
+                    </h2>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Service Status
+                            </h5>
+                            <p class="card-text">API is running and ready to accept requests.</p>
+                            <div class="d-flex justify-content-between">
+                                <span>Database:</span>
+                                <span class="badge bg-success">Connected</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Authentication:</span>
+                                <span class="badge bg-success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-code text-primary me-2"></i>
+                                Quick Start
+                            </h5>
+                            <p class="card-text">Get started with the API in minutes:</p>
+                            <ol class="mb-0">
+                                <li>Register a new user account</li>
+                                <li>Log your first run</li>
+                                <li>Earn coins and buy seeds</li>
+                                <li>Watch your garden grow!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strava Integration Notice -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">
+                            <i class="fab fa-strava me-2"></i>
+                            Strava Integration
+                        </h5>
+                        <p class="mb-0">
+                            Strava OAuth integration is planned for future releases. Currently, runs must be logged manually through the API.
+                            The authentication endpoint is available at <code>/auth/strava/connect</code> but returns a "not implemented" status.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="py-4 mt-5 border-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2025 Mystical Garden Runner API</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="mb-0">Built with Flask & SQLAlchemy</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
