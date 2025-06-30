@@ -215,7 +215,12 @@ class SeedInventory(db.Model):
     def to_dict(self):
         return {
             'seed_id': self.seed_id,
-            'quantity': self.quantity
+            'quantity': self.quantity,
+            'seed': {
+                'name': self.seed.name,
+                'plant_type': self.seed.plant_type,
+                'rarity': self.seed.rarity,
+            } if self.seed else None
         }
 
 class Garden(db.Model):
