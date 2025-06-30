@@ -317,6 +317,25 @@
                             </div>
                         </div>
 
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Plant seed</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/garden/plant</code></p>
+                                <p><strong>Description:</strong> Plants seed</p>
+                                <p><strong>Authentication:</strong> Required</p>
+
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "seed_id": <int>,         // ID of the seed to plant (must be in inventory)
+    "position_x": <int>,      // X position in the user's garden grid
+    "position_y": <int>       // Y position in the user's garden grid
+}</code></pre>
+                            </div>
+                        </div>
+
                         <!-- Update Garden -->
                         <div class="card endpoint-card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
@@ -342,6 +361,18 @@
                             <i class="fas fa-leaf text-success me-2"></i>
                             Plants
                         </h3>
+
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Inventory</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/inventory/seeds</code></p>
+                                <p><strong>Description:</strong>Get a list of all owned seeds</p>
+                                <p><strong>Authentication:</strong> Required</p>
+                            </div>
+                        </div>
 
                         <div class="card endpoint-card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">

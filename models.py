@@ -186,6 +186,38 @@ class Plant(db.Model):
             'seed': self.seed.to_dict() if self.seed else None
         }
 
+class SeedInventory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    seed_id = db.Column(db.Integer, db.ForeignKey('seed.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=0, nullable=False)
+
+    # Allows you to access the specific seed that was purchased (?)
+    seed = db.relationship('Seed')
+
+    # Ensures that for each seed there is only one row (prevents duplicate rows of 1 seed)
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'seed_id', name='unique_seed_per_user'),
+    )
+
+    def add_quantity(self, amount):
+        if amount < 0:
+            raise ValueError("Amount to add must be non-negative")
+        self.quantity += amount
+
+    def remove_quantity(self, amount):
+        if amount < 0:
+            raise ValueError("Amount to remove must be non-negative")
+        if self.quantity < amount:
+            raise ValueError("Insufficient quantity to remove")
+        self.quantity -= amount
+    
+    def to_dict(self):
+        return {
+            'seed_id': self.seed_id,
+            'quantity': self.quantity
+        }
+
 class Garden(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

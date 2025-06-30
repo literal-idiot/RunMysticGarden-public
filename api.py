@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
-from models import User, Run, CoinWallet, Seed, Plant, Garden, IntensityLevel, PlantStage
+from models import User, Run, CoinWallet, Seed, Plant, Garden, IntensityLevel, PlantStage, SeedInventory
 from utils import calculate_coins_for_run, create_default_seeds
 from datetime import datetime, timezone
 
@@ -161,65 +161,29 @@ def get_seeds():
 def buy_seed(seed_id):
     try:
         user_id = get_jwt_identity()
-        data = request.get_json() or {}
         
-        # Get seed
         seed = Seed.query.get(seed_id)
         if not seed or not seed.is_available:
             return jsonify({'error': 'Seed not found or not available'}), 404
         
-        # Get user's wallet
         wallet = CoinWallet.query.filter_by(user_id=user_id).first()
         if not wallet or wallet.balance < seed.cost_coins:
             return jsonify({'error': 'Insufficient coins'}), 400
         
-        # Get user's garden
-        garden = Garden.query.filter_by(user_id=user_id).first()
-        if not garden:
-            return jsonify({'error': 'Garden not found'}), 404
-        
-        # Check garden space
-        max_plants = garden.size_x * garden.size_y
-        current_plants = len(garden.plants)
-        if current_plants >= max_plants:
-            return jsonify({'error': 'Garden is full. Level up to expand!'}), 400
-        
-        # Get position
-        position_x = data.get('position_x', 0)
-        position_y = data.get('position_y', 0)
-        
-        # Validate position
-        if position_x < 0 or position_x >= garden.size_x or position_y < 0 or position_y >= garden.size_y:
-            return jsonify({'error': 'Invalid position'}), 400
-        
-        # Check if position is occupied
-        existing_plant = Plant.query.filter_by(
-            garden_id=garden.id,
-            position_x=position_x,
-            position_y=position_y
-        ).first()
-        
-        if existing_plant:
-            return jsonify({'error': 'Position already occupied'}), 400
-        
-        # Process purchase
         wallet.spend_coins(seed.cost_coins)
+
+        # Add to inventory
+        inventory = SeedInventory.query.filter_by(user_id=user_id, seed_id=seed.id).first()
+        if not inventory:
+            inventory = SeedInventory(user_id=user_id, seed_id=seed.id, quantity=0)
+            db.session.add(inventory)
         
-        # Plant the seed
-        plant = Plant(
-            garden_id=garden.id,
-            seed_id=seed.id,
-            position_x=position_x,
-            position_y=position_y,
-            name=data.get('name', seed.name)
-        )
-        
-        db.session.add(plant)
+        inventory.quantity += 1
         db.session.commit()
-        
+
         return jsonify({
-            'message': 'Seed purchased and planted successfully',
-            'plant': plant.to_dict(),
+            'message': 'Seed purchased successfully',
+            'inventory': inventory.to_dict(),
             'remaining_coins': wallet.balance
         }), 201
         
@@ -272,6 +236,72 @@ def update_garden():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': f'Failed to update garden: {str(e)}'}), 500
+
+@api_bp.route('/garden/plant', methods=['POST'])
+@jwt_required()
+def plant_seed():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+
+        seed_id = data.get('seed_id')
+        position_x = data.get('position_x')
+        position_y = data.get('position_y')
+        custom_name = data.get('name')
+
+        if seed_id is None or position_x is None or position_y is None:
+            return jsonify({'error': 'Missing seed_id or position coordinates'}), 400
+
+        seed = Seed.query.get(seed_id)
+        if not seed or not seed.is_available:
+            return jsonify({'error': 'Seed not found'}), 404
+
+        garden = Garden.query.filter_by(user_id=user_id).first()
+        if not garden:
+            return jsonify({'error': 'Garden not found'}), 404
+
+        if position_x < 0 or position_x >= garden.size_x or position_y < 0 or position_y >= garden.size_y:
+            return jsonify({'error': 'Invalid garden position'}), 400
+
+        existing_plant = Plant.query.filter_by(
+            garden_id=garden.id,
+            position_x=position_x,
+            position_y=position_y
+        ).first()
+
+        if existing_plant:
+            return jsonify({'error': 'Position already occupied'}), 400
+
+        # Check inventory
+        inventory = SeedInventory.query.filter_by(user_id=user_id, seed_id=seed_id).first()
+        if not inventory or inventory.quantity <= 0:
+            return jsonify({'error': 'No seeds in inventory'}), 400
+
+        # Plant the seed
+        plant = Plant(
+            garden_id=garden.id,
+            seed_id=seed.id,
+            position_x=position_x,
+            position_y=position_y,
+            name=custom_name or seed.name
+        )
+        db.session.add(plant)
+
+        # Decrement inventory
+        inventory.quantity -= 1
+        if inventory.quantity == 0:
+            db.session.delete(inventory)
+
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Seed planted successfully',
+            'plant': plant.to_dict()
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': f'Failed to plant seed: {str(e)}'}), 500
 
 @api_bp.route('/plants/<int:plant_id>', methods=['PUT'])
 @jwt_required()
@@ -380,3 +410,17 @@ def get_stats():
         
     except Exception as e:
         return jsonify({'error': f'Failed to get stats: {str(e)}'}), 500
+    
+@api_bp.route('/inventory/seeds', methods=['GET'])
+@jwt_required()
+def get_seed_inventory():
+    try:
+        user_id = get_jwt_identity()
+        inventory_items = SeedInventory.query.filter_by(user_id=user_id).all()
+
+        return jsonify({
+            'inventory': [item.to_dict() for item in inventory_items]
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': f'Failed to get inventory: {str(e)}'}), 500
