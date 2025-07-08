@@ -30,6 +30,7 @@ class User(db.Model):
     runs = db.relationship('Run', backref='user', lazy=True, cascade='all, delete-orphan')
     coin_wallet = db.relationship('CoinWallet', backref='user', uselist=False, cascade='all, delete-orphan')
     garden = db.relationship('Garden', backref='user', uselist=False, cascade='all, delete-orphan')
+    plants = db.relationship("Plant", back_populates="user", cascade="all, delete-orphan")
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -131,6 +132,7 @@ class Seed(db.Model):
 
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     garden_id = db.Column(db.Integer, db.ForeignKey('garden.id'), nullable=False)
     seed_id = db.Column(db.Integer, db.ForeignKey('seed.id'), nullable=False)
     name = db.Column(db.String(100))  # Custom name given by user
