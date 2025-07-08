@@ -13,6 +13,7 @@ class IntensityLevel(enum.Enum):
 class PlantStage(enum.Enum):
     SEED = "seed"
     SPROUT = "sprout"
+    SEEDLING = "seedling"
     SAPLING = "sapling"
     MATURE = "mature"
     BLOOMING = "blooming"
@@ -161,12 +162,14 @@ class Plant(db.Model):
         self.last_watered = datetime.now(timezone.utc)
         
         # Update stage based on progress
-        if self.growth_progress >= 80:
+        if self.growth_progress == 100:
             self.stage = PlantStage.BLOOMING
-        elif self.growth_progress >= 60:
+        elif self.growth_progress > 100:
             self.stage = PlantStage.MATURE
-        elif self.growth_progress >= 40:
+        elif self.growth_progress >= 70:
             self.stage = PlantStage.SAPLING
+        elif self.growth_progress >= 40:
+            self.stage = PlantStage.SEEDLING
         elif self.growth_progress >= 20:
             self.stage = PlantStage.SPROUT
     
@@ -192,7 +195,7 @@ class SeedInventory(db.Model):
     seed_id = db.Column(db.Integer, db.ForeignKey('seed.id'), nullable=False)
     quantity = db.Column(db.Integer, default=0, nullable=False)
 
-    # Allows you to access the specific seed that was purchased (?)
+    # Allows you to access the specific seed that was purchased (?). Very important
     seed = db.relationship('Seed')
 
     # Ensures that for each seed there is only one row (prevents duplicate rows of 1 seed)
@@ -221,6 +224,43 @@ class SeedInventory(db.Model):
                 'plant_type': self.seed.plant_type,
                 'rarity': self.seed.rarity,
             } if self.seed else None
+        }
+
+class FlowerInventory(db.Model):
+    __tablename__ = "flower_inventory" # Not critical, just good practice
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    flower_id = db.Column(db.Integer, db.ForeignKey('seed.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=0, nullable=False)
+
+    flower = db.relationship('Seed')  # <- Seed, not Plant
+
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'flower_id', name='unique_flower_per_user'),
+    )
+
+    def add_quantity(self, amount):
+        if amount < 0:
+            raise ValueError("Amount to add must be non-negative")
+        self.quantity += amount
+
+    def remove_quantity(self, amount):
+        if amount < 0:
+            raise ValueError("Amount to remove must be non-negative")
+        if self.quantity < amount:
+            raise ValueError("Insufficient quantity to remove")
+        self.quantity -= amount
+
+    def to_dict(self):
+        return {
+            'flower_id': self.flower_id,
+            'quantity': self.quantity,
+            'flower': {
+                'name': self.flower.name,
+                'plant_type': self.flower.plant_type,
+                'rarity': self.flower.rarity,
+            } if self.flower else None
         }
 
 class Garden(db.Model):
