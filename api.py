@@ -4,6 +4,7 @@ from app import db
 from models import User, Run, CoinWallet, Seed, Plant, Garden, IntensityLevel, PlantStage, SeedInventory, FlowerInventory
 from utils import calculate_coins_for_run, create_default_seeds
 from datetime import datetime, timezone
+from flask import current_app
 
 api_bp = Blueprint('api', __name__)
 
@@ -442,59 +443,67 @@ def get_flower_inventory():
 @api_bp.route("/garden/harvest/<int:plant_id>", methods=["POST"])
 @jwt_required()
 def harvest_plant(plant_id):
-    user_id = get_jwt_identity()
+    try:
+        user_id = get_jwt_identity()
 
-    plant = db.session.get(Plant, plant_id)
-    if not plant or plant.user_id != user_id:
-        return jsonify({"error": "Plant not found or not yours"}), 404
+        plant = db.session.get(Plant, plant_id)
+        if not plant or plant.user_id != user_id:
+            return jsonify({"error": "Plant not found or not yours"}), 404
 
-    if plant.stage != "blooming":
-        return jsonify({"error": "Plant is not ready to harvest"}), 400
+        if plant.stage != "blooming":
+            return jsonify({"error": "Plant is not ready to harvest"}), 400
 
-    # Try to find existing flower entry
-    flower = FlowerInventory.query.filter_by(
-        user_id=user_id,
-        name=plant.seed.name,
-        plant_type=plant.seed.plant_type,
-        rarity=plant.seed.rarity
-    ).first()
-
-    if flower:
-        flower.quantity += 1
-    else:
-        flower = FlowerInventory(
+        # Try to find existing flower entry
+        flower = FlowerInventory.query.filter_by(
             user_id=user_id,
             name=plant.seed.name,
             plant_type=plant.seed.plant_type,
-            rarity=plant.seed.rarity,
-            quantity=1
-        )
-        db.session.add(flower)
+            rarity=plant.seed.rarity
+        ).first()
 
-    # Remove harvested plant
-    db.session.delete(plant)
-    db.session.commit()
+        if flower:
+            flower.quantity += 1
+        else:
+            flower = FlowerInventory(
+                user_id=user_id,
+                name=plant.seed.name,
+                plant_type=plant.seed.plant_type,
+                rarity=plant.seed.rarity,
+                quantity=1
+            )
+            db.session.add(flower)
 
-    return jsonify({
-        "message": "Plant harvested successfully",
-        "flower": {
-            "name": flower.name,
-            "type": flower.plant_type,
-            "rarity": flower.rarity,
-            "quantity": flower.quantity
-        }
-    }), 200
+        # Remove harvested plant
+        db.session.delete(plant)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Plant harvested successfully",
+            "flower": {
+                "name": flower.name,
+                "type": flower.plant_type,
+                "rarity": flower.rarity,
+                "quantity": flower.quantity
+            }
+        }), 200
+    except Exception as e:
+        current_app.logger.error(f"Error harvesting plant: {e}", exc_info=True)
+        return jsonify({"error": "Internal server error", "details": str(e)}), 500
 
 @api_bp.route("/garden/delete/<int:plant_id>", methods=["DELETE"])
 @jwt_required()
 def delete_plant(plant_id):
-    user_id = get_jwt_identity()
+    try:
+        user_id = get_jwt_identity()
 
-    plant = db.session.get(Plant, plant_id)
-    if not plant or plant.user_id != user_id:
-        return jsonify({"error": "Plant not found or unauthorized"}), 404
+        plant = db.session.get(Plant, plant_id)
+        if not plant or plant.user_id != user_id:
+            return jsonify({"error": "Plant not found or unauthorized"}), 404
 
-    db.session.delete(plant)
-    db.session.commit()
+        db.session.delete(plant)
+        db.session.commit()
 
-    return jsonify({"message": "Plant deleted successfully"}), 200
+        return jsonify({"message": "Plant deleted successfully"}), 200
+    except Exception as e:
+        current_app.logger.error(f"Error harvesting plant: {e}", exc_info=True)
+        return jsonify({"error": "Internal server error", "details": str(e)}), 500
