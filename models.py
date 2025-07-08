@@ -135,6 +135,9 @@ class Plant(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     garden_id = db.Column(db.Integer, db.ForeignKey('garden.id'), nullable=False)
     seed_id = db.Column(db.Integer, db.ForeignKey('seed.id'), nullable=False)
+
+    user = db.relationship("User", back_populates="plants")
+
     name = db.Column(db.String(100))  # Custom name given by user
     stage = db.Column(db.Enum(PlantStage), default=PlantStage.SEED)
     growth_progress = db.Column(db.Float, default=0.0)  # 0.0 to 100.0
