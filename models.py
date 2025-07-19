@@ -181,6 +181,7 @@ class Plant(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'garden_id': self.garden_id,
             'seed_id': self.seed_id,
             'name': self.name,
