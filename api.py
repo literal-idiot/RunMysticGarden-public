@@ -450,7 +450,7 @@ def harvest_plant(plant_id):
         if not plant or plant.user_id != user_id:
             return jsonify({"error": "Plant not found or not yours"}), 404
 
-        if plant.stage != "blooming":
+        if plant.stage != PlantStage.BLOOMING:
             return jsonify({"error": "Plant is not ready to harvest"}), 400
 
         # Try to find existing flower entry
