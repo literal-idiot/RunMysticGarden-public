@@ -453,12 +453,10 @@ def harvest_plant(plant_id):
         if plant.stage != PlantStage.BLOOMING:
             return jsonify({"error": "Plant is not ready to harvest"}), 400
 
-        # Try to find existing flower entry
+        # Try to find existing flower entry using flower_id
         flower = FlowerInventory.query.filter_by(
             user_id=user_id,
-            name=plant.seed.name,
-            plant_type=plant.seed.plant_type,
-            rarity=plant.seed.rarity
+            flower_id=plant.seed.id
         ).first()
 
         if flower:
@@ -466,9 +464,7 @@ def harvest_plant(plant_id):
         else:
             flower = FlowerInventory(
                 user_id=user_id,
-                name=plant.seed.name,
-                plant_type=plant.seed.plant_type,
-                rarity=plant.seed.rarity,
+                flower_id=plant.seed.id,
                 quantity=1
             )
             db.session.add(flower)
@@ -480,15 +476,17 @@ def harvest_plant(plant_id):
         return jsonify({
             "message": "Plant harvested successfully",
             "flower": {
-                "name": flower.name,
-                "type": flower.plant_type,
-                "rarity": flower.rarity,
+                "name": flower.flower.name,
+                "type": flower.flower.plant_type,
+                "rarity": flower.flower.rarity,
                 "quantity": flower.quantity
             }
         }), 200
+
     except Exception as e:
         current_app.logger.error(f"Error harvesting plant: {e}", exc_info=True)
         return jsonify({"error": "Internal server error", "details": str(e)}), 500
+
 
 @api_bp.route("/garden/delete/<int:plant_id>", methods=["DELETE"])
 @jwt_required()
