@@ -183,7 +183,7 @@ class Plant(db.Model):
             'planted_at': self.planted_at.isoformat(),
             'position_x': self.position_x,
             'position_y': self.position_y,
-            'seed': self.seed.to_dict() if self.seed else None
+            'seed': self.seed.to_dict() if hasattr(self, 'seed') and self.seed else None
         }
 
 class Garden(db.Model):
@@ -219,5 +219,5 @@ class Garden(db.Model):
             'level': self.level,
             'experience_points': self.experience_points,
             'created_at': self.created_at.isoformat(),
-            'plants': [plant.to_dict() for plant in self.plants]
+            'plants': [plant.to_dict() for plant in self.plants] if self.plants else []
         }

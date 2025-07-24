@@ -46,18 +46,22 @@ def register():
             return jsonify({'error': 'Username already taken'}), 409
         
         # Create new user
-        user = User(email=email, username=username)
+        user = User()
+        user.email = email
+        user.username = username
         user.set_password(password)
         
         db.session.add(user)
         db.session.flush()  # Get user ID
         
         # Create coin wallet
-        wallet = CoinWallet(user_id=user.id)
+        wallet = CoinWallet()
+        wallet.user_id = user.id
         db.session.add(wallet)
         
         # Create garden
-        garden = Garden(user_id=user.id)
+        garden = Garden()
+        garden.user_id = user.id
         db.session.add(garden)
         
         db.session.commit()

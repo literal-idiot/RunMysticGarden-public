@@ -53,21 +53,21 @@ def log_run():
         coins_earned = calculate_coins_for_run(distance_km, intensity_enum)
         
         # Create run record
-        run = Run(
-            user_id=user_id,
-            distance_km=distance_km,
-            duration_minutes=duration_minutes,
-            intensity=intensity_enum,
-            pace_min_per_km=pace_min_per_km,
-            coins_earned=coins_earned
-        )
+        run = Run()
+        run.user_id = user_id
+        run.distance_km = distance_km
+        run.duration_minutes = duration_minutes
+        run.intensity = intensity_enum
+        run.pace_min_per_km = pace_min_per_km
+        run.coins_earned = coins_earned
         
         db.session.add(run)
         
         # Update coin wallet
         wallet = CoinWallet.query.filter_by(user_id=user_id).first()
         if not wallet:
-            wallet = CoinWallet(user_id=user_id)
+            wallet = CoinWallet()
+            wallet.user_id = user_id
             db.session.add(wallet)
         
         wallet.add_coins(coins_earned)
@@ -129,7 +129,8 @@ def get_wallet():
         wallet = CoinWallet.query.filter_by(user_id=user_id).first()
         
         if not wallet:
-            wallet = CoinWallet(user_id=user_id)
+            wallet = CoinWallet()
+            wallet.user_id = user_id
             db.session.add(wallet)
             db.session.commit()
         
@@ -206,13 +207,12 @@ def buy_seed(seed_id):
         wallet.spend_coins(seed.cost_coins)
         
         # Plant the seed
-        plant = Plant(
-            garden_id=garden.id,
-            seed_id=seed.id,
-            position_x=position_x,
-            position_y=position_y,
-            name=data.get('name', seed.name)
-        )
+        plant = Plant()
+        plant.garden_id = garden.id
+        plant.seed_id = seed.id
+        plant.position_x = position_x
+        plant.position_y = position_y
+        plant.name = data.get('name', seed.name)
         
         db.session.add(plant)
         db.session.commit()
@@ -235,7 +235,8 @@ def get_garden():
         garden = Garden.query.filter_by(user_id=user_id).first()
         
         if not garden:
-            garden = Garden(user_id=user_id)
+            garden = Garden()
+            garden.user_id = user_id
             db.session.add(garden)
             db.session.commit()
         
