@@ -61,6 +61,10 @@ def create_app():
     def docs():
         return render_template('docs.html')
     
+    @app.route('/strava-test')
+    def strava_test():
+        return render_template('strava_test.html')
+    
     return app
 
 app = create_app()

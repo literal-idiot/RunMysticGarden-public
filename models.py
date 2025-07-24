@@ -186,6 +186,43 @@ class Plant(db.Model):
             'seed': self.seed.to_dict() if hasattr(self, 'seed') and self.seed else None
         }
 
+class StravaAccount(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    strava_athlete_id = db.Column(db.BigInteger, unique=True, nullable=False)
+    access_token = db.Column(db.String(500), nullable=False)
+    refresh_token = db.Column(db.String(500), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    athlete_firstname = db.Column(db.String(100))
+    athlete_lastname = db.Column(db.String(100))
+    athlete_city = db.Column(db.String(100))
+    athlete_country = db.Column(db.String(100))
+    athlete_profile_picture = db.Column(db.String(500))
+    connected_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    last_sync = db.Column(db.DateTime)
+    is_active = db.Column(db.Boolean, default=True)
+    
+    # Relationship
+    user = db.relationship('User', backref='strava_account', uselist=False)
+    
+    def is_token_expired(self):
+        """Check if the access token is expired"""
+        return datetime.now(timezone.utc) > self.expires_at
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'strava_athlete_id': self.strava_athlete_id,
+            'athlete_firstname': self.athlete_firstname,
+            'athlete_lastname': self.athlete_lastname,
+            'athlete_city': self.athlete_city,
+            'athlete_country': self.athlete_country,
+            'athlete_profile_picture': self.athlete_profile_picture,
+            'connected_at': self.connected_at.isoformat(),
+            'last_sync': self.last_sync.isoformat() if self.last_sync else None,
+            'is_active': self.is_active
+        }
+
 class Garden(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

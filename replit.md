@@ -26,6 +26,7 @@ Mystical Garden Runner is a gamified running application backend that combines f
 
 ### Core Models
 - **User**: Account management with email/username authentication
+- **StravaAccount**: OAuth integration storing Strava tokens and athlete data
 - **Run**: Fitness tracking with distance, duration, and intensity metrics
 - **CoinWallet**: Virtual currency system for gamification
 - **Garden/Plant/Seed**: Virtual gardening mechanics
@@ -33,9 +34,12 @@ Mystical Garden Runner is a gamified running application backend that combines f
 - **PlantStage**: Enum for plant growth phases (seed to blooming)
 
 ### API Endpoints
-- **Authentication**: `/auth/register`, `/auth/login`
-- **Run Tracking**: `/api/runs` (POST for logging runs)
+- **Authentication**: `/auth/register`, `/auth/login`, `/auth/profile`
+- **Strava OAuth**: `/auth/strava/connect`, `/auth/strava/callback`, `/auth/strava/link`, `/auth/strava/status`, `/auth/strava/disconnect`
+- **Run Tracking**: `/api/runs` (POST for logging runs, GET for history)
+- **Strava Sync**: `/api/strava/sync`, `/api/strava/stats`
 - **Garden Management**: Plant purchasing, growth tracking, and garden visualization
+- **Testing**: `/strava-test` (interactive testing interface)
 
 ### Business Logic
 - **Coin Calculation**: Distance-based rewards with intensity multipliers and milestone bonuses
@@ -56,6 +60,7 @@ Mystical Garden Runner is a gamified running application backend that combines f
 - **Database**: psycopg2-binary for PostgreSQL connectivity
 - **Validation**: email-validator for input sanitization
 - **Deployment**: Gunicorn WSGI server for production
+- **Strava Integration**: stravalib for OAuth and API access, requests for HTTP calls
 
 ### Infrastructure
 - **Replit Environment**: Nix-based Python 3.11 runtime
@@ -84,6 +89,7 @@ Mystical Garden Runner is a gamified running application backend that combines f
 
 ```
 Changelog:
+- July 24, 2025. Strava OAuth integration added with full activity sync
 - June 24, 2025. Initial setup
 ```
 

@@ -1,8 +1,9 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app import db
-from models import User, Run, CoinWallet, Seed, Plant, Garden, IntensityLevel, PlantStage
+from models import User, Run, CoinWallet, Seed, Plant, Garden, IntensityLevel, PlantStage, StravaAccount
 from utils import calculate_coins_for_run, create_default_seeds
+from strava_service import strava_service
 from datetime import datetime, timezone
 
 api_bp = Blueprint('api', __name__)
@@ -381,3 +382,57 @@ def get_stats():
         
     except Exception as e:
         return jsonify({'error': f'Failed to get stats: {str(e)}'}), 500
+
+@api_bp.route('/strava/sync', methods=['POST'])
+@jwt_required()
+def sync_strava_activities():
+    """Sync recent activities from Strava"""
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json() or {}
+        days_back = data.get('days_back', 7)
+        
+        # Check if user has Strava connected
+        strava_account = StravaAccount.query.filter_by(user_id=user_id, is_active=True).first()
+        if not strava_account:
+            return jsonify({'error': 'No Strava account connected. Please connect your Strava account first.'}), 400
+        
+        # Sync activities
+        result = strava_service.sync_recent_activities(user_id, days_back)
+        
+        if 'error' in result:
+            return jsonify(result), 400
+        
+        return jsonify({
+            'message': 'Strava activities synced successfully',
+            **result
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to sync Strava activities: {str(e)}'}), 500
+
+@api_bp.route('/strava/stats', methods=['GET'])
+@jwt_required()
+def get_strava_stats():
+    """Get Strava athlete statistics"""
+    try:
+        user_id = get_jwt_identity()
+        
+        # Check if user has Strava connected
+        strava_account = StravaAccount.query.filter_by(user_id=user_id, is_active=True).first()
+        if not strava_account:
+            return jsonify({'error': 'No Strava account connected'}), 400
+        
+        # Get Strava stats
+        strava_stats = strava_service.get_athlete_stats(user_id)
+        
+        if not strava_stats:
+            return jsonify({'error': 'Failed to retrieve Strava statistics'}), 500
+        
+        return jsonify({
+            'strava_stats': strava_stats,
+            'account_info': strava_account.to_dict()
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to get Strava stats: {str(e)}'}), 500
