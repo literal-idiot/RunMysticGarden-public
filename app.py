@@ -31,7 +31,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
     # Configure JWT
-    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "jwt-secret-change-in-production")
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "b11ca008b90018ac45a598f94314e8ca")
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False  # Tokens don't expire for mobile app convenience
     
     # Initialize extensions
