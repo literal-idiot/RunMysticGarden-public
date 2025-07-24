@@ -245,6 +245,7 @@ def plant_seed():
         user_id = get_jwt_identity()
         data = request.get_json()
 
+        user_id=user_id,
         seed_id = data.get('seed_id')
         position_x = data.get('position_x')
         position_y = data.get('position_y')
