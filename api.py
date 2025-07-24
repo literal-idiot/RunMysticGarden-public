@@ -242,6 +242,7 @@ def update_garden():
 @jwt_required()
 def plant_seed():
     try:
+        print("JWT identity:", get_jwt_identity())
         user_id = get_jwt_identity()
         data = request.get_json()
 
