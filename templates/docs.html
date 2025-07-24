@@ -53,6 +53,7 @@
                         <h5>Table of Contents</h5>
                         <ul class="list-unstyled">
                             <li><a href="#authentication" class="text-decoration-none">Authentication</a></li>
+                            <li><a href="#strava" class="text-decoration-none">Strava Integration</a></li>
                             <li><a href="#runs" class="text-decoration-none">Runs</a></li>
                             <li><a href="#wallet" class="text-decoration-none">Wallet</a></li>
                             <li><a href="#seeds" class="text-decoration-none">Seeds</a></li>
@@ -156,6 +157,186 @@
                                 <h6>Headers:</h6>
                                 <pre><code>Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...</code></pre>
                             </div>
+                        </div>
+                    </section>
+
+                    <!-- Strava Integration Section -->
+                    <section id="strava" class="mb-5">
+                        <h3 class="mb-4">
+                            <i class="fab fa-strava text-warning me-2"></i>
+                            Strava Integration
+                        </h3>
+                        <p class="text-muted mb-4">Connect your Strava account to automatically sync running activities and earn coins for your garden.</p>
+
+                        <!-- Connect Strava -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Strava Authorization URL</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/strava/connect</code></p>
+                                <p><strong>Description:</strong> Get authorization URL for Strava OAuth flow</p>
+                                <p><strong>Authentication:</strong> Bearer token required</p>
+                                
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "authorization_url": "https://www.strava.com/oauth/authorize?client_id=...",
+    "message": "Visit the authorization URL to connect your Strava account"
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Link Strava Account -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Link Strava Account</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/strava/link</code></p>
+                                <p><strong>Description:</strong> Link your Strava account using access token from OAuth callback</p>
+                                <p><strong>Authentication:</strong> Bearer token required</p>
+                                
+                                <h6>Request Body:</h6>
+                                <pre><code class="language-json">{
+    "access_token": "your_strava_access_token_here"
+}</code></pre>
+
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "message": "Strava account linked successfully",
+    "strava_account": {
+        "id": 1,
+        "strava_athlete_id": 12345678,
+        "athlete_firstname": "John",
+        "athlete_lastname": "Doe",
+        "athlete_city": "San Francisco",
+        "athlete_country": "United States",
+        "connected_at": "2025-07-24T08:00:00Z",
+        "is_active": true
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Strava Status -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Check Strava Status</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/strava/status</code></p>
+                                <p><strong>Description:</strong> Check if Strava account is connected and status</p>
+                                <p><strong>Authentication:</strong> Bearer token required</p>
+                                
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "connected": true,
+    "strava_account": {
+        "id": 1,
+        "strava_athlete_id": 12345678,
+        "athlete_firstname": "John",
+        "athlete_lastname": "Doe",
+        "last_sync": "2025-07-24T07:30:00Z",
+        "is_active": true
+    },
+    "token_expired": false
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Sync Activities -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Sync Strava Activities</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/strava/sync</code></p>
+                                <p><strong>Description:</strong> Sync recent running activities from Strava (last 7 days by default)</p>
+                                <p><strong>Authentication:</strong> Bearer token required</p>
+                                
+                                <h6>Request Body (optional):</h6>
+                                <pre><code class="language-json">{
+    "days_back": 14
+}</code></pre>
+
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "message": "Strava activities synced successfully",
+    "success": true,
+    "synced_activities": 3,
+    "skipped_activities": 1,
+    "total_checked": 4
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Get Strava Stats -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Get Strava Statistics</h5>
+                                <span class="badge method-badge method-get">GET</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/api/strava/stats</code></p>
+                                <p><strong>Description:</strong> Get athlete running statistics from Strava</p>
+                                <p><strong>Authentication:</strong> Bearer token required</p>
+                                
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "strava_stats": {
+        "recent_run_totals": {
+            "count": 15,
+            "distance": 45.2,
+            "moving_time": 12600,
+            "elevation_gain": 150.5
+        },
+        "all_run_totals": {
+            "count": 250,
+            "distance": 1250.8,
+            "moving_time": 360000,
+            "elevation_gain": 5200.0
+        }
+    },
+    "account_info": {
+        "athlete_firstname": "John",
+        "athlete_lastname": "Doe"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- Disconnect Strava -->
+                        <div class="card endpoint-card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Disconnect Strava Account</h5>
+                                <span class="badge method-badge method-post">POST</span>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Endpoint:</strong> <code>/auth/strava/disconnect</code></p>
+                                <p><strong>Description:</strong> Disconnect Strava account from user profile</p>
+                                <p><strong>Authentication:</strong> Bearer token required</p>
+                                
+                                <h6>Response:</h6>
+                                <pre><code class="language-json">{
+    "message": "Strava account disconnected successfully"
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- OAuth Flow Guide -->
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>OAuth Flow Steps:</h6>
+                            <ol class="mb-0">
+                                <li>Call <code>GET /auth/strava/connect</code> to get authorization URL</li>
+                                <li>Visit the authorization URL and authorize your app</li>
+                                <li>Copy the access token from the callback response</li>
+                                <li>Call <code>POST /auth/strava/link</code> with the access token</li>
+                                <li>Use <code>POST /api/strava/sync</code> to sync your activities</li>
+                            </ol>
                         </div>
                     </section>
 

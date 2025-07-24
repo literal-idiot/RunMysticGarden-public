@@ -144,15 +144,21 @@
             <!-- Strava Integration Notice -->
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="alert alert-info">
+                    <div class="alert alert-success">
                         <h5 class="alert-heading">
                             <i class="fab fa-strava me-2"></i>
-                            Strava Integration
+                            Strava Integration Available!
                         </h5>
-                        <p class="mb-0">
-                            Strava OAuth integration is planned for future releases. Currently, runs must be logged manually through the API.
-                            The authentication endpoint is available at <code>/auth/strava/connect</code> but returns a "not implemented" status.
+                        <p class="mb-3">
+                            Connect your Strava account to automatically sync your running activities and earn coins for your mystical garden.
+                            Full OAuth 2.0 integration with token management and activity sync.
                         </p>
+                        <a href="/strava-test" class="btn btn-warning">
+                            <i class="fab fa-strava me-2"></i>Test Strava Integration
+                        </a>
+                        <a href="/docs#strava" class="btn btn-outline-light ms-2">
+                            <i class="fas fa-book me-2"></i>View Documentation
+                        </a>
                     </div>
                 </div>
             </div>

@@ -89,7 +89,7 @@ Mystical Garden Runner is a gamified running application backend that combines f
 
 ```
 Changelog:
-- July 24, 2025. Strava OAuth integration added with full activity sync
+- July 24, 2025. Strava OAuth integration completed with full activity sync, token management, and testing interface
 - June 24, 2025. Initial setup
 ```
 
